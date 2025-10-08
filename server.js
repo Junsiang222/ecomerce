@@ -1,3 +1,5 @@
+// load the environment variables
+require("dotenv").config();
 const express = require("express");
 // import mongoose
 const mongoose = require("mongoose");
@@ -13,7 +15,7 @@ app.use(cors());
 // connect to MongoDB using Mongoose
 async function connectToMongoDB() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/Ecomerce");
+    await mongoose.connect(process.env.MONGODB_URL+"/Ecomerce");
     console.log("MongoDB is Connected");
   } catch (error) {
     console.log(error);
@@ -31,6 +33,15 @@ app.get("/", (req, res) => {
 //import all the routers
 const productRouter = require("./routes/product");
 app.use("/products", productRouter);
+app.use("/orders", require("./routes/order"));
+app.use("/payment", require("./routes/payment"));
+app.use("/image", require("./routes/image"));
+app.use("/categories", require("./routes/category"));
+app.use("/users", require("./routes/user"));
+
+//set a folder as a static path
+app.use("/uploads", express.static("uploads"));
+
 
 // start the express server
 app.listen(5524, () => {
